@@ -23,6 +23,7 @@ def main():
     group.add_argument("--weather-svg", action="store_true", help="Generate pure CSS animated weather SVG (0 KB video)")
     group.add_argument("--sparkline", action="store_true", help="Generate telemetry data sparkline SVG")
     group.add_argument("--radar", action="store_true", help="Generate polar radar/spider chart SVG")
+    group.add_argument("--text-anim", help="Convert text string into animated vector shape SVG (e.g. --text-anim 'BEKVEKTOR')")
     group.add_argument("--studio", action="store_true", help="Launch live interactive web workbench")
 
     parser.add_argument("--output", help="Output filepath (.svg, .png, .mp4, or .jsx)")
@@ -56,6 +57,10 @@ def main():
     elif args.radar:
         svg = DataViz.radar_chart({"CPU": 45, "RAM": 44, "DISK": 70, "NET": 85, "ACC": 98}, radius=80)
         out_name = "radar_metrics.svg"
+    elif args.text_anim:
+        from bekvector.text import TextToPath
+        svg = TextToPath.create_animated_text_svg(args.text_anim, font_size=72, accent_color="#FA5D29", accent_indices=[0, 1, 2], animation_type="stagger_rise")
+        out_name = "text_vector.svg"
     elif args.sky_anim:
         out_mp4 = args.output or "vektor_langit.mp4"
         anim = VectorAnimation(generate_sky_frame, total_frames=90, fps=30)

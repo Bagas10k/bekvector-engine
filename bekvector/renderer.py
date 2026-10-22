@@ -19,6 +19,7 @@ def render_mp4(frame_dir: str, output_path: str, fps: int = 30) -> str:
     cmd = [
         "ffmpeg", "-y", "-framerate", str(fps),
         "-i", os.path.join(frame_dir, "frame_%03d.png"),
+        "-vf", "pad=ceil(iw/2)*2:ceil(ih/2)*2",
         "-c:v", "libx264", "-pix_fmt", "yuv420p",
         "-crf", "18", output_path
     ]

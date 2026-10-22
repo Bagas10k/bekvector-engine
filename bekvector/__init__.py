@@ -7,6 +7,7 @@ from .core import BekVector, Shapes, compute_damped_tangent, format_coord
 from .animation import VectorAnimation
 from .renderer import render_png, render_mp4
 from .dataviz import DataViz
+from .text import TextToPath
 from .svg_animator import generate_animated_weather_svg
 from .filters import get_grain_filter, get_gooey_filter, get_frosted_specular_filter
 from .themes import get_theme, THEMES, Theme
@@ -21,6 +22,7 @@ __all__ = [
     "Shapes",
     "VectorAnimation",
     "DataViz",
+    "TextToPath",
     "Spring",
     "Theme",
     "THEMES",

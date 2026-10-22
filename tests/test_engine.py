@@ -66,5 +66,11 @@ class TestBekVector(unittest.TestCase):
         self.assertIn("@keyframes driftBack", svg)
         self.assertIn("<circle", svg)
 
+    def test_text_to_path_conversion(self):
+        from bekvector.text import TextToPath
+        data = TextToPath.convert("BEKVEKTOR", font_size=48)
+        self.assertEqual(len(data["glyphs"]), 9)
+        self.assertIn("<path", data["combined_paths"])
+
 if __name__ == "__main__":
     unittest.main()
