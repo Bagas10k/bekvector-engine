@@ -9,6 +9,7 @@ from .renderer import render_png, render_mp4
 from .dataviz import DataViz
 from .text import TextToPath
 from .morph import IconMorph
+from .universal_morph import UniversalMorph
 from .svg_animator import generate_animated_weather_svg
 from .filters import get_grain_filter, get_gooey_filter, get_frosted_specular_filter
 from .themes import get_theme, THEMES, Theme
@@ -16,7 +17,7 @@ from .spring import Spring
 from .exporter import to_react_component, to_vue_component
 from .studio import run_studio
 
-__version__ = "1.4.0"
+__version__ = "1.5.0"
 __author__ = "Bagas Cihuy"
 __all__ = [
     "BekVector",
@@ -25,6 +26,7 @@ __all__ = [
     "DataViz",
     "TextToPath",
     "IconMorph",
+    "UniversalMorph",
     "Spring",
     "Theme",
     "THEMES",

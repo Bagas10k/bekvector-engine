@@ -81,5 +81,12 @@ class TestBekVector(unittest.TestCase):
         self.assertIn("DOWNLOAD ➔ CHECKMARK", svg)
         self.assertIn("cubic-bezier(0.16, 1, 0.3, 1)", svg)
 
+    def test_universal_morphing_engine(self):
+        from bekvector.universal_morph import UniversalMorph
+        path_interp = UniversalMorph.morph_between("heart", "star", 0.5)
+        self.assertTrue(path_interp.startswith("M "))
+        self.assertTrue(path_interp.endswith("Z"))
+        self.assertIn("C ", path_interp)
+
 if __name__ == "__main__":
     unittest.main()
