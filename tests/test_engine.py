@@ -72,5 +72,14 @@ class TestBekVector(unittest.TestCase):
         self.assertEqual(len(data["glyphs"]), 9)
         self.assertIn("<path", data["combined_paths"])
 
+    def test_icon_morphing_generation(self):
+        from bekvector.morph import IconMorph
+        svg = IconMorph.generate_showcase_stage(1000, 420)
+        self.assertIn("HAMBURGER ➔ CLOSE", svg)
+        self.assertIn("SUN ➔ CRESCENT MOON", svg)
+        self.assertIn("PLAY ➔ PAUSE ACTION", svg)
+        self.assertIn("DOWNLOAD ➔ CHECKMARK", svg)
+        self.assertIn("cubic-bezier(0.16, 1, 0.3, 1)", svg)
+
 if __name__ == "__main__":
     unittest.main()

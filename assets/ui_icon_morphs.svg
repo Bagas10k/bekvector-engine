@@ -1,0 +1,349 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 420" width="1000" height="420">
+  <defs>
+    <!-- Dark Studio Mesh Gradient -->
+    <linearGradient id="stageBg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0B0D13" />
+      <stop offset="50%" stop-color="#141824" />
+      <stop offset="100%" stop-color="#08090C" />
+    </linearGradient>
+  </defs>
+
+  <rect width="1000" height="420" fill="url(#stageBg)" />
+
+  <!-- Stage Header -->
+  <text x="40" y="44" font-family="'Inter', sans-serif" font-size="18" font-weight="800" fill="#EDEDED" letter-spacing="0.04em">
+    BEKVISUAL · DYNAMIC UI ICON MORPHING
+  </text>
+  <text x="960" y="44" font-family="'JetBrains Mono', monospace" font-size="12" font-weight="600" fill="#FA5D29" text-anchor="end">
+    60 FPS IN-PLACE FLUID TRANSFORMATION
+  </text>
+  <line x1="40" y1="56" x2="960" y2="56" stroke="rgba(255,255,255,0.1)" stroke-width="1.2" />
+
+  
+    <!-- Card 1: HAMBURGER ➔ CLOSE -->
+    <g transform="translate(40, 80)">
+      <!-- Blur Glass Physical Card Frame -->
+      <rect width="215" height="280" rx="18" fill="rgba(20, 24, 36, 0.75)" stroke="rgba(255, 255, 255, 0.12)" stroke-width="1.5" />
+      <line x1="15" y1="220" x2="200" y2="220" stroke="rgba(255, 255, 255, 0.08)" stroke-width="1" />
+      
+      <!-- Morphing Icon Viewport -->
+      <g transform="translate(107, 105)">
+        
+        <g class="icon-hamburger-close" transform="translate(40.0, 40.0)">
+          <style>
+            @keyframes topBarMorph {
+              0%, 15% { transform: translateY(-12px) rotate(0deg); }
+              45%, 65% { transform: translateY(0px) rotate(45deg); }
+              85%, 100% { transform: translateY(-12px) rotate(0deg); }
+            }
+            @keyframes midBarMorph {
+              0%, 15% { transform: scaleX(1); opacity: 1; }
+              45%, 65% { transform: scaleX(0); opacity: 0; }
+              85%, 100% { transform: scaleX(1); opacity: 1; }
+            }
+            @keyframes botBarMorph {
+              0%, 15% { transform: translateY(12px) rotate(0deg); }
+              45%, 65% { transform: translateY(0px) rotate(-45deg); }
+              85%, 100% { transform: translateY(12px) rotate(0deg); }
+            }
+            .bar-top {
+              animation: topBarMorph 3s cubic-bezier(0.16, 1, 0.3, 1) infinite;
+              transform-origin: center;
+            }
+            .bar-mid {
+              animation: midBarMorph 3s cubic-bezier(0.16, 1, 0.3, 1) infinite;
+              transform-origin: center;
+            }
+            .bar-bot {
+              animation: botBarMorph 3s cubic-bezier(0.16, 1, 0.3, 1) infinite;
+              transform-origin: center;
+            }
+          </style>
+          <line class="bar-top" x1="-16" y1="0" x2="16" y2="0" stroke="#EDEDED" stroke-width="4" stroke-linecap="round" />
+          <line class="bar-mid" x1="-16" y1="0" x2="16" y2="0" stroke="#FA5D29" stroke-width="4" stroke-linecap="round" />
+          <line class="bar-bot" x1="-16" y1="0" x2="16" y2="0" stroke="#EDEDED" stroke-width="4" stroke-linecap="round" />
+        </g>
+        
+      </g>
+
+      <!-- Editorial Typography -->
+      <text x="107" y="242" font-family="'JetBrains Mono', monospace" font-size="11" font-weight="700" fill="#EDEDED" text-anchor="middle" letter-spacing="0.06em">
+        HAMBURGER ➔ CLOSE
+      </text>
+      <text x="107" y="260" font-family="'Inter', sans-serif" font-size="10" font-weight="500" fill="#8892B0" text-anchor="middle">
+        Navigation State
+      </text>
+    </g>
+
+    <!-- Card 2: SUN ➔ CRESCENT MOON -->
+    <g transform="translate(275, 80)">
+      <!-- Blur Glass Physical Card Frame -->
+      <rect width="215" height="280" rx="18" fill="rgba(20, 24, 36, 0.75)" stroke="rgba(255, 255, 255, 0.12)" stroke-width="1.5" />
+      <line x1="15" y1="220" x2="200" y2="220" stroke="rgba(255, 255, 255, 0.08)" stroke-width="1" />
+      
+      <!-- Morphing Icon Viewport -->
+      <g transform="translate(107, 105)">
+        
+        <g class="icon-sun-moon" transform="translate(40.0, 40.0)">
+          <style>
+            @keyframes sunMoonBody {
+              0%, 15% {
+                fill: #FFD000;
+                transform: rotate(0deg) scale(1);
+              }
+              45%, 65% {
+                fill: #A0C4FF;
+                transform: rotate(140deg) scale(1.1);
+              }
+              85%, 100% {
+                fill: #FFD000;
+                transform: rotate(360deg) scale(1);
+              }
+            }
+            @keyframes moonScoop {
+              0%, 15% {
+                cx: 40px;
+                cy: -40px;
+              }
+              45%, 65% {
+                cx: 8px;
+                cy: -8px;
+              }
+              85%, 100% {
+                cx: 40px;
+                cy: -40px;
+              }
+            }
+            @keyframes sunRays {
+              0%, 15% {
+                opacity: 1;
+                transform: scale(1) rotate(0deg);
+              }
+              45%, 65% {
+                opacity: 0;
+                transform: scale(0.2) rotate(90deg);
+              }
+              85%, 100% {
+                opacity: 1;
+                transform: scale(1) rotate(360deg);
+              }
+            }
+            .sun-core {
+              animation: sunMoonBody 3.5s cubic-bezier(0.16, 1, 0.3, 1) infinite;
+              transform-origin: center;
+              mask: url(#moon-mask);
+            }
+            .mask-scoop {
+              animation: moonScoop 3.5s cubic-bezier(0.16, 1, 0.3, 1) infinite;
+            }
+            .sun-rays-group {
+              animation: sunRays 3.5s cubic-bezier(0.16, 1, 0.3, 1) infinite;
+              transform-origin: center;
+            }
+          </style>
+          
+          <mask id="moon-mask">
+            <rect x="-50" y="-50" width="100" height="100" fill="#FFFFFF" />
+            <circle class="mask-scoop" cx="40" cy="-40" r="16.72" fill="#000000" />
+          </mask>
+
+          <!-- Radiating Sun Rays -->
+          <g class="sun-rays-group" stroke="#FFD000" stroke-width="3" stroke-linecap="round">
+            <line x1="0" y1="-28" x2="0" y2="-23" />
+            <line x1="0" y1="23" x2="0" y2="28" />
+            <line x1="-28" y1="0" x2="-23" y2="0" />
+            <line x1="23" y1="0" x2="28" y2="0" />
+            <line x1="-20" y1="-20" x2="-16" y2="-16" />
+            <line x1="16" y1="16" x2="20" y2="20" />
+            <line x1="-20" y1="20" x2="-16" y2="16" />
+            <line x1="16" y1="-16" x2="20" y2="-20" />
+          </g>
+
+          <!-- Center Body -->
+          <circle class="sun-core" cx="0" cy="0" r="17.6" />
+        </g>
+        
+      </g>
+
+      <!-- Editorial Typography -->
+      <text x="107" y="242" font-family="'JetBrains Mono', monospace" font-size="11" font-weight="700" fill="#EDEDED" text-anchor="middle" letter-spacing="0.06em">
+        SUN ➔ CRESCENT MOON
+      </text>
+      <text x="107" y="260" font-family="'Inter', sans-serif" font-size="10" font-weight="500" fill="#8892B0" text-anchor="middle">
+        Theme Morph
+      </text>
+    </g>
+
+    <!-- Card 3: PLAY ➔ PAUSE ACTION -->
+    <g transform="translate(510, 80)">
+      <!-- Blur Glass Physical Card Frame -->
+      <rect width="215" height="280" rx="18" fill="rgba(20, 24, 36, 0.75)" stroke="rgba(255, 255, 255, 0.12)" stroke-width="1.5" />
+      <line x1="15" y1="220" x2="200" y2="220" stroke="rgba(255, 255, 255, 0.08)" stroke-width="1" />
+      
+      <!-- Morphing Icon Viewport -->
+      <g transform="translate(107, 105)">
+        
+        <g class="icon-play-pause" transform="translate(40.0, 40.0)">
+          <style>
+            @keyframes playToPauseLeft {
+              0%, 15% {
+                d: path("M -12 -16 L -2 -10 L -2 10 L -12 16 Z");
+                fill: #FA5D29;
+              }
+              45%, 65% {
+                d: path("M -10 -14 L -4 -14 L -4 14 L -10 14 Z");
+                fill: #FFFFFF;
+              }
+              85%, 100% {
+                d: path("M -12 -16 L -2 -10 L -2 10 L -12 16 Z");
+                fill: #FA5D29;
+              }
+            }
+            @keyframes playToPauseRight {
+              0%, 15% {
+                d: path("M -2 -10 L 14 0 L 14 0 L -2 10 Z");
+                fill: #FA5D29;
+              }
+              45%, 65% {
+                d: path("M 4 -14 L 10 -14 L 10 14 L 4 14 Z");
+                fill: #FFFFFF;
+              }
+              85%, 100% {
+                d: path("M -2 -10 L 14 0 L 14 0 L -2 10 Z");
+                fill: #FA5D29;
+              }
+            }
+            .bar-left {
+              animation: playToPauseLeft 2.8s cubic-bezier(0.16, 1, 0.3, 1) infinite;
+            }
+            .bar-right {
+              animation: playToPauseRight 2.8s cubic-bezier(0.16, 1, 0.3, 1) infinite;
+            }
+          </style>
+          <path class="bar-left" d="M -12 -16 L -2 -10 L -2 10 L -12 16 Z" />
+          <path class="bar-right" d="M -2 -10 L 14 0 L 14 0 L -2 10 Z" />
+        </g>
+        
+      </g>
+
+      <!-- Editorial Typography -->
+      <text x="107" y="242" font-family="'JetBrains Mono', monospace" font-size="11" font-weight="700" fill="#EDEDED" text-anchor="middle" letter-spacing="0.06em">
+        PLAY ➔ PAUSE ACTION
+      </text>
+      <text x="107" y="260" font-family="'Inter', sans-serif" font-size="10" font-weight="500" fill="#8892B0" text-anchor="middle">
+        Media Playback
+      </text>
+    </g>
+
+    <!-- Card 4: DOWNLOAD ➔ CHECKMARK -->
+    <g transform="translate(745, 80)">
+      <!-- Blur Glass Physical Card Frame -->
+      <rect width="215" height="280" rx="18" fill="rgba(20, 24, 36, 0.75)" stroke="rgba(255, 255, 255, 0.12)" stroke-width="1.5" />
+      <line x1="15" y1="220" x2="200" y2="220" stroke="rgba(255, 255, 255, 0.08)" stroke-width="1" />
+      
+      <!-- Morphing Icon Viewport -->
+      <g transform="translate(107, 105)">
+        
+        <g class="icon-download-check" transform="translate(40.0, 40.0)">
+          <style>
+            @keyframes arrowMorph {
+              0%, 15% {
+                transform: translateY(0px) scale(1);
+                opacity: 1;
+                stroke: #49B3FC;
+              }
+              30%, 65% {
+                transform: translateY(-8px) scale(0.2);
+                opacity: 0;
+              }
+              75%, 90% {
+                transform: translateY(0px) scale(1);
+                opacity: 1;
+                stroke: #34D399;
+              }
+              100% {
+                transform: translateY(0px) scale(1);
+                opacity: 1;
+                stroke: #49B3FC;
+              }
+            }
+            @keyframes circleProgress {
+              0%, 15% {
+                stroke-dasharray: 120;
+                stroke-dashoffset: 80;
+                transform: rotate(0deg);
+                stroke: #49B3FC;
+              }
+              35%, 65% {
+                stroke-dasharray: 120;
+                stroke-dashoffset: 30;
+                transform: rotate(540deg);
+                stroke: #49B3FC;
+              }
+              75%, 90% {
+                stroke-dasharray: 120;
+                stroke-dashoffset: 0;
+                transform: rotate(720deg);
+                stroke: #34D399;
+              }
+              100% {
+                stroke-dasharray: 120;
+                stroke-dashoffset: 80;
+                transform: rotate(1080deg);
+                stroke: #49B3FC;
+              }
+            }
+            @keyframes checkmarkReveal {
+              0%, 68% {
+                stroke-dashoffset: 35;
+                opacity: 0;
+              }
+              75%, 90% {
+                stroke-dashoffset: 0;
+                opacity: 1;
+              }
+              98%, 100% {
+                stroke-dashoffset: 35;
+                opacity: 0;
+              }
+            }
+            .progress-ring {
+              animation: circleProgress 4s cubic-bezier(0.16, 1, 0.3, 1) infinite;
+              transform-origin: center;
+            }
+            .arrow-group {
+              animation: arrowMorph 4s cubic-bezier(0.16, 1, 0.3, 1) infinite;
+              transform-origin: center;
+            }
+            .check-path {
+              stroke-dasharray: 35;
+              animation: checkmarkReveal 4s cubic-bezier(0.16, 1, 0.3, 1) infinite;
+              transform-origin: center;
+            }
+          </style>
+
+          <!-- Outer Ring / Tray -->
+          <circle class="progress-ring" cx="0" cy="0" r="22" fill="none" stroke-width="3.5" stroke-linecap="round" />
+
+          <!-- Download Arrow Elements -->
+          <g class="arrow-group">
+            <line x1="0" y1="-10" x2="0" y2="8" stroke-width="3" stroke-linecap="round" />
+            <path d="M -6 2 L 0 8 L 6 2" fill="none" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" />
+          </g>
+
+          <!-- Success Checkmark -->
+          <path class="check-path" d="M -8 1 L -2 7 L 8 -5" fill="none" stroke="#34D399" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round" />
+        </g>
+        
+      </g>
+
+      <!-- Editorial Typography -->
+      <text x="107" y="242" font-family="'JetBrains Mono', monospace" font-size="11" font-weight="700" fill="#EDEDED" text-anchor="middle" letter-spacing="0.06em">
+        DOWNLOAD ➔ CHECKMARK
+      </text>
+      <text x="107" y="260" font-family="'Inter', sans-serif" font-size="10" font-weight="500" fill="#8892B0" text-anchor="middle">
+        Async Task Status
+      </text>
+    </g>
+
+</svg>
