@@ -1,21 +1,84 @@
 """
 bekvector/universal_morph.py - Universal SVG Icon Morphing & Path Interpolation Engine.
-Can morph ANY arbitrary SVG icon or shape into ANY other shape with continuous
-arclength resampling, rotation alignment, and 60 FPS spring physics.
+Features Arclength Resampling, Rotational Phase Alignment, and Dynamic Transition Velocity.
 """
 
 import math
-import re
 import os
+
+class TransitionVelocity:
+    """
+    Mathematical Velocity Profiles for Hyper-Polished UI Motion.
+    Converts linear time progress t in [0, 1] into dynamic velocity with
+    anticipation, peak velocity bursts, and damped elastic overshoots.
+    """
+
+    @staticmethod
+    def snappy_spring(t, overshoot=0.08, damping=14):
+        """
+        Hyper-snappy transition: Rapid acceleration burst with Hooke's law damped bounce.
+        """
+        p = max(0.0, min(1.0, t))
+        if p == 0.0:
+            return 0.0
+        if p == 1.0:
+            return 1.0
+
+        # Anticipation contraction during first 12%
+        if p < 0.12:
+            return -math.sin(p / 0.12 * math.pi) * 0.025
+
+        # Remap [0.12, 1.0] to [0.0, 1.0]
+        adjusted_p = (p - 0.12) / 0.88
+        
+        # Spring physics: 1 - exp(-damping * p) * cos(frequency * p)
+        freq = 3.5 * math.pi
+        decay = math.exp(-damping * adjusted_p * 0.4)
+        bounce = math.cos(freq * adjusted_p) * decay * overshoot
+        
+        # Base ease-out power 4 curve
+        base = 1.0 - math.pow(1.0 - adjusted_p, 4)
+        return min(1.08, max(0.0, base + bounce))
+
+    @staticmethod
+    def exponential_burst(t):
+        """
+        High velocity burst: extremely fast middle phase with smooth deceleration.
+        """
+        p = max(0.0, min(1.0, t))
+        if p < 0.5:
+            return math.pow(2, 20 * p - 10) / 2
+        else:
+            return (2 - math.pow(2, -20 * p + 10)) / 2
+
+    @staticmethod
+    def smooth_swift(t):
+        """
+        Apple / Linear standard: cubic-bezier(0.16, 1, 0.3, 1) approximation.
+        """
+        p = max(0.0, min(1.0, t))
+        return 1.0 - math.pow(1.0 - p, 3.2)
+
+    @classmethod
+    def apply_profile(cls, t, profile="snappy_spring"):
+        if profile == "snappy_spring":
+            return cls.snappy_spring(t)
+        elif profile == "exponential_burst":
+            return cls.exponential_burst(t)
+        elif profile == "smooth_swift":
+            return cls.smooth_swift(t)
+        else:
+            # Fallback to cosine smooth
+            return (1.0 - math.cos(t * math.pi)) / 2.0
+
 
 class UniversalMorph:
     """
     Universal Path Interpolation & Animation Engine.
     Handles any two arbitrary SVG paths, resamples them to identical point budgets,
-    aligns rotational phase to prevent twisting, and outputs fluid morphing SVG / MP4.
+    aligns rotational phase to prevent twisting, and applies transition velocity profiles.
     """
 
-    # Built-in Standard Icon Vectors (Normalized to 64x64 viewport)
     CATALOG = {
         "heart": [
             (32, 54), (16, 38), (8, 24), (14, 12), (24, 12), (32, 20),
@@ -45,7 +108,6 @@ class UniversalMorph:
             (22, 48), (14, 34), (12, 14)
         ],
         "gear": [
-            # 8-toothed mechanical gear perimeter
             (32 + (24 if (i % 2 == 0) else 18) * math.cos(i * math.pi / 8),
              32 + (24 if (i % 2 == 0) else 18) * math.sin(i * math.pi / 8))
             for i in range(16)
@@ -76,14 +138,9 @@ class UniversalMorph:
 
     @classmethod
     def resample_polygon(cls, points, num_samples=64):
-        """
-        Resamples an arbitrary closed polygon to exactly `num_samples` equidistant points
-        along its perimeter to allow 1:1 mathematical point-to-point interpolation.
-        """
         if len(points) < 2:
             return points
 
-        # Calculate cumulative perimeter lengths
         cum_dist = [0.0]
         total_len = 0.0
         n = len(points)
@@ -99,7 +156,6 @@ class UniversalMorph:
 
         step = total_len / num_samples
         resampled = []
-
         curr_seg = 0
         for s in range(num_samples):
             target_dist = s * step
@@ -121,10 +177,6 @@ class UniversalMorph:
 
     @classmethod
     def align_rotation(cls, poly_a, poly_b):
-        """
-        Finds the cyclical shift offset of poly_b that minimizes the sum of squared distances
-        between poly_a[i] and poly_b[i+shift], preventing shapes from twisting/tangling during morph.
-        """
         num_pts = len(poly_a)
         best_shift = 0
         min_cost = float("inf")
@@ -139,15 +191,11 @@ class UniversalMorph:
                 min_cost = cost
                 best_shift = shift
 
-        # Return shifted poly_b
         return [poly_b[(i + best_shift) % num_pts] for i in range(num_pts)]
 
     @classmethod
     def interpolate(cls, poly_a, poly_b, progress):
-        """
-        Linearly interpolates between two aligned polygons at progress t in [0, 1].
-        """
-        t = max(0.0, min(1.0, progress))
+        t = progress
         result = []
         for i in range(len(poly_a)):
             x = (1.0 - t) * poly_a[i][0] + t * poly_b[i][0]
@@ -157,9 +205,6 @@ class UniversalMorph:
 
     @classmethod
     def polygon_to_smooth_path(cls, points):
-        """
-        Converts a list of points into a smooth closed SVG cubic Bézier path (`M C ... Z`).
-        """
         n = len(points)
         if n == 0:
             return ""
@@ -173,7 +218,6 @@ class UniversalMorph:
             p2 = points[(i + 1) % n]
             p3 = points[(i + 2) % n]
 
-            # Catmull-Rom to Cubic Bézier conversion
             cp1_x = p1[0] + (p2[0] - p0[0]) / 6.0
             cp1_y = p1[1] + (p2[1] - p0[1]) / 6.0
             cp2_x = p2[0] - (p3[0] - p1[0]) / 6.0
@@ -185,10 +229,9 @@ class UniversalMorph:
         return " ".join(path)
 
     @classmethod
-    def morph_between(cls, name_or_points_a, name_or_points_b, progress, num_samples=64):
+    def morph_between(cls, name_or_points_a, name_or_points_b, progress, num_samples=64, velocity_profile=None):
         """
-        Public API: Morphs between any two named icons or point lists at progress t.
-        Returns the interpolated SVG path string.
+        Public API: Morphs between any two icons with optional dynamic velocity profile.
         """
         pts_a = cls.CATALOG[name_or_points_a] if isinstance(name_or_points_a, str) else name_or_points_a
         pts_b = cls.CATALOG[name_or_points_b] if isinstance(name_or_points_b, str) else name_or_points_b
@@ -197,15 +240,16 @@ class UniversalMorph:
         poly_b = cls.resample_polygon(pts_b, num_samples=num_samples)
         aligned_b = cls.align_rotation(poly_a, poly_b)
 
-        interp = cls.interpolate(poly_a, aligned_b, progress)
+        # Apply velocity curve if requested
+        t_curved = progress
+        if velocity_profile:
+            t_curved = TransitionVelocity.apply_profile(progress, profile=velocity_profile)
+
+        interp = cls.interpolate(poly_a, aligned_b, t_curved)
         return cls.polygon_to_smooth_path(interp)
 
     @classmethod
     def generate_universal_stage(cls, morph_pairs=None, width=1200, height=380):
-        """
-        Generates a 4-card UI stage showcasing arbitrary icon morphs in parallel.
-        Default pairs: (Heart ➔ Star), (Shield ➔ Gear), (Bell ➔ Bolt), (Cloud ➔ Search)
-        """
         if morph_pairs is None:
             morph_pairs = [
                 ("heart", "star", "#FF4D6D", "#FFD000", "Favorit ➔ Rating"),
@@ -214,39 +258,32 @@ class UniversalMorph:
                 ("cloud", "search", "#34D399", "#49B3FC", "Cloud Storage ➔ Query"),
             ]
 
-        # Generate CSS SMIL / keyframe morph path samples
         cards = []
         for i, (icon_a, icon_b, color_a, color_b, label) in enumerate(morph_pairs):
             cx = 40 + i * 285
             cy = 75
 
-            # Calculate path at 0%, 50%, 100%
             p_0 = cls.morph_between(icon_a, icon_b, 0.0)
             p_50 = cls.morph_between(icon_a, icon_b, 1.0)
 
             cards.append(f"""
-    <!-- Card {i+1}: {icon_a.upper()} ➔ {icon_b.upper()} -->
     <g transform="translate({cx}, {cy})">
       <rect width="260" height="260" rx="20" fill="rgba(20, 24, 36, 0.75)" stroke="rgba(255, 255, 255, 0.12)" stroke-width="1.5" />
       <line x1="20" y1="200" x2="240" y2="200" stroke="rgba(255, 255, 255, 0.08)" stroke-width="1" />
-
-      <!-- Morphing Icon Viewport (Centered) -->
       <g transform="translate(130, 105) scale(1.6) translate(-32, -32)">
         <path d="{p_0}" fill="{color_a}" opacity="0.95">
           <animate attributeName="d" 
                    values="{p_0}; {p_50}; {p_0}" 
-                   dur="3.2s" 
+                   dur="2.4s" 
                    repeatCount="indefinite" 
                    calcMode="spline" 
                    keySplines="0.16 1 0.3 1; 0.16 1 0.3 1" />
           <animate attributeName="fill" 
                    values="{color_a}; {color_b}; {color_a}" 
-                   dur="3.2s" 
+                   dur="2.4s" 
                    repeatCount="indefinite" />
         </path>
       </g>
-
-      <!-- Label -->
       <text x="130" y="224" font-family="'JetBrains Mono', monospace" font-size="12" font-weight="700" fill="#EDEDED" text-anchor="middle" letter-spacing="0.08em">
         {icon_a.upper()} ➔ {icon_b.upper()}
       </text>
@@ -264,17 +301,14 @@ class UniversalMorph:
       <stop offset="100%" stop-color="#08090C" />
     </linearGradient>
   </defs>
-
   <rect width="{width}" height="{height}" fill="url(#universalBg)" />
-
   <text x="40" y="44" font-family="'Inter', sans-serif" font-size="20" font-weight="800" fill="#EDEDED" letter-spacing="0.04em">
     BEKVISUAL · UNIVERSAL ICON MORPHING ENGINE
   </text>
   <text x="{width - 40}" y="44" font-family="'JetBrains Mono', monospace" font-size="12" font-weight="600" fill="#FA5D29" text-anchor="end">
-    ARCLENGTH RESAMPLING &amp; ROTATION ALIGNED (ANY SHAPE ➔ ANY SHAPE)
+    DYNAMIC TRANSITION VELOCITY · SNAPPY 60 FPS
   </text>
   <line x1="40" y1="56" x2="{width - 40}" y2="56" stroke="rgba(255,255,255,0.12)" stroke-width="1.2" />
-
   {''.join(cards)}
 </svg>"""
         return svg
